@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
+        id="cordova-plugin-kiosk" version="0.2">
+
+    <name>Cordova Kiosk Mode</name>
+    <author>Claus Helfenschneider (based on Jan Kalina)</author>
+    <description>
+        Cordova plugin to create Cordova application with "kiosk mode".
+        App with this plugin can be set as Android launcher.
+        If app starts as launcher, it will block hardware buttons and statusbar,
+        which would allow escape from application.
+        Escape from app will be possible only by javascript call KioskPlugin.exitKiosk()
+        or by uninstallation app using adb. (Keeping USB debug allowed recommended.)
+        If applications starts as usual (not as launcher), no restrictions will be applied.
+		
+        This plugin is for Android for now. Support of iOS would be useless,
+        becase this feature is builded in iOS as Guided Access.
+		
+		This plugin is a fork of Jan Kalina's Cordova Kiosk Mode plugin:
+		
+		Plugin website: https://github.com/honza889/cordova-plugin-kiosk
+        Example app: https://github.com/honza889/cordova-kiosk-demo
+		
+		This plugin contains mainly two changes/updates:
+		- Non-clickable area on top of screen has been made smaller
+		- Top menu is closed more aggressively
+    </description>
+    <keywords>cordova, launcher, homescreen, kiosk, kiosk mode</keywords>
+
+    <engines>
+        <engine name="cordova" version=">=3.0.0" />
+    </engines>
+
+    <js-module src="kiosk.js" name="kioskPlugin">
+        <clobbers target="window.KioskPlugin" />
+    </js-module>
+
+    <platform name="android">
+
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="KioskPlugin">
+                <param name="android-package" value="jk.cordova.plugin.kiosk.KioskPlugin" />
+            </feature>
+        </config-file>
+
+        <edit-config file="AndroidManifest.xml" target="/manifest/application/activity[@android:label='@string/activity_name']" mode="merge">
+            <activity android:name="jk.cordova.plugin.kiosk.KioskActivity" android:keepScreenOn="true" android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            </activity>
+        </edit-config>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity[@android:label='@string/activity_name']">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <category android:name="android.intent.category.DEFAULT" /><!-- Handler of app icon (required to be launcher) -->
+                    <category android:name="android.intent.category.HOME" /><!-- Handler of Home button -->
+                </intent-filter>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <!-- autorun after the app APK is updated -->
+            <receiver android:name="jk.cordova.plugin.kiosk.MyPackageReplacedEventReceiver">
+                <intent-filter>
+                    <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                </intent-filter>
+            </receiver>
+        </config-file>
+
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+                <uses-permission android:name="android.permission.REORDER_TASKS"/>
+                <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+                <uses-permission android:name="android.permission.CAMERA" />
+                <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+        </config-file>
+
+        <source-file src="android/KioskActivity.java" target-dir="src/jk/cordova/plugin/kiosk" />
+        <source-file src="android/KioskPlugin.java" target-dir="src/jk/cordova/plugin/kiosk" />
+        <source-file src="android/MyPackageReplacedEventReceiver.java" target-dir="src/jk/cordova/plugin/kiosk" />
+        <source-file src="android/StatusBarOverlay.java" target-dir="src/jk/cordova/plugin/kiosk" />
+
+    </platform>
+
+</plugin>
