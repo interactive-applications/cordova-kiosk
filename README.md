@@ -1,3 +1,13 @@
+> This is a fork of the cordova-plugin-kiosk plugin by khalinka [https://github.com/hkalina/cordova-plugin-kiosk]. 
+
+Cordova Kiosk Mode - changes
+============================
+
+* Non-clickable area on top of screen has been made smaller
+* Top menu is closed more aggressively
+
+> Below is the original documentation by khalinka.
+
 Cordova Kiosk Mode
 ==================
 
