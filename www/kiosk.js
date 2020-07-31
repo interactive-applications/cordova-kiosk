@@ -1,7 +1,18 @@
-
 var exec = require('cordova/exec');
 
 var KioskPlugin = {
+    
+    setKioskEnabled(enabled) {
+        exec(null, null, "KioskPlugin", "setKioskEnabled", [!!enabled]);
+    },
+    
+    setCloseSystemDialogIntervalMillis(millis) {
+        exec(null, null, "KioskPlugin", "setCloseSystemDialogIntervalMillis", [millis]);
+    },
+    
+    setCloseSystemDialogDurationMillis(millis) {
+        exec(null, null, "KioskPlugin", "setCloseSystemDialogDurationMillis", [millis]);
+    },
     
     exitKiosk: function () {
         exec(function () {}, function (error) {
@@ -42,4 +53,3 @@ var KioskPlugin = {
 }
 
 module.exports = KioskPlugin;
-

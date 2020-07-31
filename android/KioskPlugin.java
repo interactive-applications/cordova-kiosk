@@ -22,23 +22,44 @@ import java.util.HashSet;
 
 public class KioskPlugin extends CordovaPlugin {
     
+    public static final String SET_KIOSK_ENABLED = "setKioskEnabled";
     public static final String EXIT_KIOSK = "exitKiosk";
     public static final String IS_IN_KIOSK = "isInKiosk";
     public static final String IS_SET_AS_LAUNCHER = "isSetAsLauncher";
     public static final String SET_ALLOWED_KEYS = "setAllowedKeys";
+    public static final String SET_CLOSE_SYSTEM_DIALOG_INTERVAL_MILLIS = "setCloseSystemDialogIntervalMillis";
+    public static final String SET_CLOSE_SYSTEM_DIALOG_DURATION_MILLIS = "setCloseSystemDialogDurationMillis";
     
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         try {
             if (IS_IN_KIOSK.equals(action)) {
                 
-                callbackContext.success(Boolean.toString(KioskActivity.running));
+                callbackContext.success(Boolean.toString(KioskActivity.running && KioskActivity.kioskEnabled));
                 return true;
                 
             } else if (IS_SET_AS_LAUNCHER.equals(action)) {
                 
                 String myPackage = cordova.getActivity().getApplicationContext().getPackageName();
                 callbackContext.success(Boolean.toString(myPackage.equals(findLauncherPackageName())));
+                return true;
+                
+            } else if (SET_KIOSK_ENABLED.equals(action)) {
+                
+                KioskActivity.kioskEnabled = args.getBoolean(0);
+                callbackContext.success();
+                return true;
+                
+            } else if (SET_CLOSE_SYSTEM_DIALOG_INTERVAL_MILLIS.equals(action)) {
+                
+                KioskActivity.closeSystemDialogIntervalMillis = args.getInt(0);
+                callbackContext.success();
+                return true;
+                
+            } else if (SET_CLOSE_SYSTEM_DIALOG_DURATION_MILLIS.equals(action)) {
+                
+                KioskActivity.closeSystemDialogDurationMillis = args.getInt(0);
+                callbackContext.success();
                 return true;
                 
             } else if (EXIT_KIOSK.equals(action)) {

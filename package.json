@@ -1,0 +1,36 @@
+{
+  "name": "cordova-plugin-kiosk-ia",
+  "version": "1.1.0",
+  "description": "\n        Cordova plugin to create Cordova application with \"kiosk mode\".\n        App with this plugin can be set as Android launcher.\n        If app starts as launcher, it will block hardware buttons and statusbar,\n        which would allow escape from application.\n        Escape from app will be possible only by javascript call KioskPlugin.exitKiosk()\n        or by uninstallation app using adb. (Keeping USB debug allowed recommended.)\n        If applications starts as usual (not as launcher), no restrictions will be applied.\n\t\t\n        This plugin is for Android for now. Support of iOS would be useless,\n        becase this feature is builded in iOS as Guided Access.\n\t\t\n\t\tThis plugin is a fork of Jan Kalina's Cordova Kiosk Mode plugin:\n\t\t\n\t\tPlugin website: https://github.com/honza889/cordova-plugin-kiosk\n        Example app: https://github.com/honza889/cordova-kiosk-demo\n\t\t\n\t\tThis plugin contains mainly two changes/updates:\n\t\t- Non-clickable area on top of screen has been made smaller\n\t\t- Top menu is closed more aggressively\n    ",
+  "cordova": {
+    "id": "cordova-plugin-kiosk-ia",
+    "platforms": [
+      "android"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/interactive-applications/cordova-kiosk.git"
+  },
+  "keywords": [
+    "cordova",
+    "launcher",
+    "homescreen",
+    "kiosk",
+    "kiosk mode",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=3.0.0"
+    }
+  ],
+  "author": "Claus Helfenschneider (based on Jan Kalina)",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/interactive-applications/cordova-kiosk/issues"
+  },
+  "homepage": "https://github.com/interactive-applications/cordova-kiosk#readme"
+}

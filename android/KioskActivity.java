@@ -22,8 +22,12 @@ import java.util.TimerTask;
 public class KioskActivity extends CordovaActivity {
 
     public static volatile boolean running = false;
+    public static volatile boolean kioskEnabled = true;
     public static volatile Set<Integer> allowedKeys = Collections.EMPTY_SET;
-
+    public static volatile int closeSystemDialogIntervalMillis = 200;
+    public static volatile int closeSystemDialogDurationMillis = 20000;
+    
+    
     private StatusBarOverlay statusBarOverlay = null;
 
     @Override
@@ -50,6 +54,10 @@ public class KioskActivity extends CordovaActivity {
         }
         
         loadUrl(launchUrl);
+        
+        if (!kioskEnabled) {
+            return;
+        }
         
         // https://github.com/apache/cordova-plugin-statusbar/blob/master/src/android/StatusBar.java
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
@@ -80,6 +88,11 @@ public class KioskActivity extends CordovaActivity {
     @Override
     protected void onPause() {
             super.onPause();
+            
+            if (!kioskEnabled) {
+                return;
+            }
+            
             ActivityManager activityManager = (ActivityManager) getApplicationContext()
                     .getSystemService(Context.ACTIVITY_SERVICE);
             activityManager.moveTaskToFront(getTaskId(), 0);
@@ -87,6 +100,11 @@ public class KioskActivity extends CordovaActivity {
     
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (!kioskEnabled) {
+            // allow the event to be handled by the next receiver
+            return false;
+        }
+        
         System.out.println("onKeyDown event: keyCode = " + event.getKeyCode());
         return ! allowedKeys.contains(event.getKeyCode()); // prevent event from being propagated if not allowed
     }
@@ -101,6 +119,11 @@ public class KioskActivity extends CordovaActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
+        
+        if (!kioskEnabled) {
+            return;
+        }
+        
         if(!hasFocus) {
             System.out.println("Focus lost - closing system dialogs");
             
@@ -111,18 +134,11 @@ public class KioskActivity extends CordovaActivity {
             am.moveTaskToFront(getTaskId(), ActivityManager.MOVE_TASK_WITH_HOME);
             
             // sometime required to close opened notification area
-            /*
-            Timer timer = new Timer();
-            timer.schedule(new TimerTask(){
-                public void run() {
-                    Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-                    sendBroadcast(closeDialog);
-                }
-            }, 500); // 0.5 second
-            */
             Timer timer = new Timer();
             int begin = 0;
-            int timeInterval = 250;
+            // aggressively close the area by doing it for {duration}, every {timeInterva} (all values in milliseconds)
+            int timeInterval = closeSystemDialogIntervalMillis;
+            int duration = closeSystemDialogDurationMillis;
             timer.schedule(new TimerTask() {
                 int counter = 0;
                 public void run() {
@@ -130,8 +146,8 @@ public class KioskActivity extends CordovaActivity {
                     Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
                     sendBroadcast(closeDialog);
                     counter++;
-                    // run for 10 seconds
-                    if (counter*timeInterval >= 10000){
+                    // run for x seconds
+                    if (counter*timeInterval >= duration){
                         timer.cancel();
                     }
                 }

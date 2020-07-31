@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android"
-        id="cordova-plugin-kiosk" version="0.2">
+        id="cordova-plugin-kiosk-ia" version="1.1.0" author="Claus Helfenschneider (based on Jan Kalina)">
 
     <name>Cordova Kiosk Mode</name>
     <author>Claus Helfenschneider (based on Jan Kalina)</author>
@@ -24,6 +24,7 @@
 		This plugin contains mainly two changes/updates:
 		- Non-clickable area on top of screen has been made smaller
 		- Top menu is closed more aggressively
+        - Added setCloseSystemDialogIntervalMillis(int), setCloseSystemDialogDurationMillis(int) and setKioskEnabled(bool)
     </description>
     <keywords>cordova, launcher, homescreen, kiosk, kiosk mode</keywords>
 
@@ -31,7 +32,7 @@
         <engine name="cordova" version=">=3.0.0" />
     </engines>
 
-    <js-module src="kiosk.js" name="kioskPlugin">
+    <js-module src="www/kiosk.js" name="kioskPlugin">
         <clobbers target="window.KioskPlugin" />
     </js-module>
 
